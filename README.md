@@ -9,5 +9,5 @@ mkdir -p build
 gcc \
 src/danish_number.c \
 src/demo.c \
--o build/danske_tal
+-o build/danish_number_2_letter
 ```

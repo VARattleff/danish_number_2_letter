@@ -10,25 +10,29 @@ void convert_units(int num, char* buffer)
 
 void convert_tens(int num, char* buffer) 
 {
+    const char* ones[] = {"nul", "et", "to", "tre", "fire", "fem", "seks", "syv", "otte", "ni"};
     const char* teens[] = {"ti", "elleve", "tolv", "tretten", "fjorten", "femten", "seksten", "sytten", "atten", "nitten"};
     const char* tens[] = {"", "", "tyve", "tredive", "fyrre", "halvtreds", "tres", "halvfjerds", "firs", "halvfems"};
     
     if (num < 10) 
     {
         convert_units(num, buffer);
-    } else if (num < 20) 
+    } 
+    else if (num < 20) 
     {
         strcpy(buffer, teens[num - 10]);
-    } else 
+    } 
+    else 
     {
         int tens_part = num / 10;
         int units_part = num % 10;
         if (units_part == 0) 
         {
             strcpy(buffer, tens[tens_part]);
-        } else 
-        {    
-            sprintf(buffer, "%sog%s", units_part == 1 ? "en" : "", tens[tens_part]); 
+        } 
+        else 
+        {
+            sprintf(buffer, "%sog%s", ones[units_part], tens[tens_part]);
         }
     }
 }
@@ -57,7 +61,14 @@ void convert_hundreds(int num, char* buffer)
             strcpy(buffer, temp_buffer);
         } else 
         {    
-            sprintf(buffer, "%s og ", temp_buffer);
+            if (remainder < 10)
+            {
+                sprintf(buffer, "%s og ", temp_buffer);
+            }
+            else
+            {
+                sprintf(buffer, "%s ", temp_buffer);
+            }
             convert_tens(remainder, buffer + strlen(buffer));
         }
     }

@@ -3,7 +3,7 @@
 
 int main() 
 {
-    char buffer[256];  
+    char buffer[255];  
 
     NumberFormat format_standard = {LAST, 1};  
 
@@ -24,6 +24,14 @@ int main()
     int num4 = 1001;
     dansketal(num4, buffer, format_standard);
     printf("%d -> %s\n", num4, buffer);
+
+    int num5 = 1000000;
+    dansketal(num5, buffer, format_standard);
+    printf("%d -> %s\n", num5, buffer);
+
+    int num6 = 2000000000;
+    dansketal(num6, buffer, format_standard);
+    printf("%d -> %s\n", num6, buffer);
 
     return 0;
 }

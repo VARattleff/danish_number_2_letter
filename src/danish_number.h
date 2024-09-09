@@ -3,7 +3,6 @@
 
 typedef enum {NEVER, EVERY, LAST} Occurrence;
 
-
 typedef struct 
 {
     Occurrence og;  

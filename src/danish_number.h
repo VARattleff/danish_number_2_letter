@@ -14,7 +14,7 @@ typedef struct
     long long numeric_threshold;
 } NumberFormat;
 
-void dansketal(long long num, char* buffer, NumberFormat format);
+void dansketal(int num, char* buffer, NumberFormat format);
 void set_default_format(NumberFormat* format);
 
 #endif

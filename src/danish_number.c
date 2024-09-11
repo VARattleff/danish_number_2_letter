@@ -40,6 +40,7 @@ void convert_units_and_teens(int num, char* buffer, Style style)
     };
 
     const char** ones_and_teens;
+
     switch(style) 
     {
         case FORMAL: ones_and_teens = ones_and_teens_formal; break;
@@ -179,7 +180,7 @@ void convert_thousands(int num, char* buffer, NumberFormat format)
     }
 }
 
-void convert_millions(long long num, char* buffer, NumberFormat format) 
+void convert_millions(int num, char* buffer, NumberFormat format) 
 {
     if (num < 1000000) 
     {
@@ -190,6 +191,7 @@ void convert_millions(long long num, char* buffer, NumberFormat format)
     int millions_part = num / 1000000;
     int remainder = num % 1000000;
     char temp_buffer[256] = "";
+    char remainder_buffer[256] = "";
     
     if (millions_part == 1) 
     {
@@ -203,14 +205,17 @@ void convert_millions(long long num, char* buffer, NumberFormat format)
     
     if (remainder != 0) 
     {
-        strcat(temp_buffer, " ");
-        convert_thousands(remainder, buffer + strlen(temp_buffer), format);
+        convert_thousands(remainder, remainder_buffer, format);
+        if (strlen(remainder_buffer) > 0) {
+            strcat(temp_buffer, " ");
+            strcat(temp_buffer, remainder_buffer);
+        }
     }
     
     strcpy(buffer, temp_buffer);
 }
 
-void convert_billions(long long num, char* buffer, NumberFormat format) 
+void convert_billions(int num, char* buffer, NumberFormat format) 
 {
     if (num < 1000000000) 
     {
@@ -218,17 +223,22 @@ void convert_billions(long long num, char* buffer, NumberFormat format)
         return;
     }
 
-    long long billions_part = num / 1000000000;
-    long long remainder = num % 1000000000;
+    int billions_part = num / 1000000000;
+    int remainder = num % 1000000000;
     char temp_buffer[256] = "";
 
     if (billions_part == 1) 
     {
         strcpy(temp_buffer, "en milliard");
     } 
-    else 
+    else if (billions_part < 1000) 
     {
         convert_hundreds(billions_part, temp_buffer, format);
+        strcat(temp_buffer, " milliarder");
+    }
+    else 
+    {
+        convert_billions(billions_part, temp_buffer, format);
         strcat(temp_buffer, " milliarder");
     }
 
@@ -241,7 +251,7 @@ void convert_billions(long long num, char* buffer, NumberFormat format)
     }
 }
 
-void dansketal(long long num, char* buffer, NumberFormat format) 
+void dansketal(int num, char* buffer, NumberFormat format) 
 {
     if (num == 0) 
     {
@@ -251,7 +261,7 @@ void dansketal(long long num, char* buffer, NumberFormat format)
 
     if (format.use_numeric_for_large && (num >= format.numeric_threshold || num <= -format.numeric_threshold))
     {
-        sprintf(buffer, "%lld", num);
+        sprintf(buffer, "%d", num);
         return;
     }
 

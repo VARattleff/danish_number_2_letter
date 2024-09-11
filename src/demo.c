@@ -1,42 +1,57 @@
 #include <stdio.h>
 #include "danish_number.h"
 
+void print_format_results(NumberFormat format, const char* format_name, int* numbers, int num_tests) 
+{
+    char buffer[255];
+    printf("---------------------------\n");
+    printf("%s:\n", format_name);
+    for (int i = 0; i < num_tests; i++) 
+    {
+        dansketal(numbers[i], buffer, format);
+        printf("%d -> %s\n", numbers[i], buffer);
+    }
+}
+
 int main()
 {
-    char buffer[1024];
+    int numbers_for_demo[] = {0, 1, -1, 21, 100, 101, 789, 1000, 1001, 1100, 45678, 123456, 1000001, 987654321, 2000000001, -1234567891};
+
+    int num_tests = sizeof(numbers_for_demo) / sizeof(numbers_for_demo[0]);
     NumberFormat format;
 
     printf("Demonstration af dansketal-funktionen:\n\n");
 
-    long long numbers[] = {0, 325, -997, 4395, 5589, 1100000, 999999999, 2000400060, -145602000};
-    int num_tests = sizeof(numbers) / sizeof(numbers[0]);
-
+    // Standard format
     set_default_format(&format);
-    printf("Standard format:\n");
-    for (int i = 0; i < num_tests; i++) {
-        dansketal(numbers[i], buffer, format);
-        printf("%lld -> %s\n", numbers[i], buffer);
-    }
+    print_format_results(format, "Standard format", numbers_for_demo, num_tests);
 
-    printf("\nFormel stil med stort begyndelsesbogstav:\n");
-    format.style = FORMAL;
-    format.capitalize_first = 1;
-    dansketal(325, buffer, format);
-    printf("325 -> %s\n", buffer);
-
-    printf("\nUformel stil med 'og' overalt:\n");
+    // Stil variationer
     format.style = CASUAL;
-    format.og = EVERY;
-    format.capitalize_first = 0;
-    dansketal(325, buffer, format);
-    printf("325 -> %s\n", buffer);
+    print_format_results(format, "CASUAL format", numbers_for_demo, num_tests);
 
-    printf("\nBrug numerisk for store tal:\n");
+    format.style = FORMAL;
+    print_format_results(format, "FORMAL format", numbers_for_demo, num_tests);
+
+    // 'og' forekomst variationer
+    format.style = NORMAL;
+    format.og = NEVER;
+    print_format_results(format, "'og' NEVER", numbers_for_demo, num_tests);
+
+    format.og = EVERY;
+    print_format_results(format, "'og' EVERY", numbers_for_demo, num_tests);
+
+    // Andre booleanske indstillinger
     set_default_format(&format);
+    format.skip_one_thousand = 0;
+    print_format_results(format, "Ikke spring 'et' over i 'et tusind'", numbers_for_demo, num_tests);
+
+    format.capitalize_first = 1;
+    print_format_results(format, "Stort begyndelsesbogstav", numbers_for_demo, num_tests);
+
     format.use_numeric_for_large = 1;
-    format.numeric_threshold = 1000000; 
-    dansketal(2000400000, buffer, format);
-    printf("2000400000 -> %s\n", buffer);
+    format.numeric_threshold = 1000000;
+    print_format_results(format, "Brug numerisk for tal over 1 million", numbers_for_demo, num_tests);
 
     return 0;
 }
